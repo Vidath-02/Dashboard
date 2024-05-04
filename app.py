@@ -40,7 +40,7 @@ st.markdown('<div class="center header"><h1>Global Sales Dashboard<h1></div>', u
 st.markdown('<div class="center subheader"><h3>Analyze Your Sales Data<h3></div>', unsafe_allow_html=True)
 
 # Read the data
-sales_data = pd.read_excel("/full/path/to/sales_data.xlsx", engine='openpyxl')
+sales_data = pd.read_excel("sales_data.xlsx", engine='openpyxl')
 
 # Define a function to create charts
 def create_chart(data, chart_type, x, y, title, color=None):
