@@ -52,11 +52,16 @@ charts_info = [
     {"type": "density_heatmap", "x": "Country", "y": "Sales", "title": "Heatmap of Top 10 Countries in Sales", "color_scale": "reds"}
 ]
 
-# Create and display charts in the same line
-col1, col2, col3, col4, col5, col6 = st.columns(6)
+# Create and display charts in 3 rows with 2 graphs in each row
+row1_col1, row1_col2 = st.columns(2)
+row2_col1, row2_col2 = st.columns(2)
+row3_col1, row3_col2 = st.columns(2)
 
-for index, info in enumerate(charts_info):
-    with eval(f"col{index+1}"):
+rows = [(row1_col1, row1_col2), (row2_col1, row2_col2), (row3_col1, row3_col2)]
+
+for index, (col1, col2) in enumerate(rows):
+    with col1:
+        info = charts_info[index * 2]
         if "type" in info:
             try:
                 if info["type"] == "pie":
@@ -71,9 +76,22 @@ for index, info in enumerate(charts_info):
                 st.plotly_chart(fig, use_container_width=True)
             except KeyError:
                 st.write("Invalid chart configuration: ", info)
-                continue
-        else:
-            st.write("Invalid chart configuration: ", info)
+    with col2:
+        info = charts_info[index * 2 + 1]
+        if "type" in info:
+            try:
+                if info["type"] == "pie":
+                    fig = getattr(px, info["type"])(sales_data, names=info.get("names"), title=info.get("title"), hole=info.get("hole", 0.5))
+                elif info["type"] == "density_heatmap":
+                    sales_by_country = sales_data.groupby('Country')['Sales'].sum().reset_index()
+                    top_10_countries = sales_by_country.nlargest(10, 'Sales')
+                    df_top_10_countries = sales_data[sales_data['Country'].isin(top_10_countries['Country'])]
+                    fig = getattr(px, info["type"])(df_top_10_countries, x=info.get("x"), y=info.get("y"), title=info.get("title"), color_continuous_scale=info.get("color_scale"))
+                else:
+                    fig = getattr(px, info["type"])(sales_data, x=info.get("x"), y=info.get("y"), title=info.get("title"), color=info.get("color"))
+                st.plotly_chart(fig, use_container_width=True)
+            except KeyError:
+                st.write("Invalid chart configuration: ", info)
 
 # Close bordered container
 st.markdown("</div>", unsafe_allow_html=True)
