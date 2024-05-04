@@ -4,8 +4,8 @@ import plotly.express as px
 
 # Setting page configuration
 st.set_page_config(
-    page_title="Dashboard",
-    page_icon=":bar_chart:",
+    page_title="Sales Dashboard",
+    page_icon=":chart_with_upwards_trend:",
     layout="wide"
 )
 
@@ -36,48 +36,40 @@ st.markdown(
 st.markdown('<div class="bordered">', unsafe_allow_html=True)
 
 # Main header and subheader
-st.markdown('<div class="center header"><h1>Global Superstore Dashboard<h1></div>', unsafe_allow_html=True)
-st.markdown('<div class="center subheader"><h3>An Analysis of Sales Data<h3></div>', unsafe_allow_html=True)
+st.markdown('<div class="center header"><h1>Global Sales Dashboard<h1></div>', unsafe_allow_html=True)
+st.markdown('<div class="center subheader"><h3>Analyze Your Sales Data<h3></div>', unsafe_allow_html=True)
 
 # Read the data
-df = pd.read_excel("cleaned_dataset.xlsx", engine='openpyxl')
+sales_data = pd.read_excel("sales_data.xlsx", engine='openpyxl')
 
-# Creating three-column layout
-col1, col2, col3 = st.columns(3)
+# Define a function to create charts
+def create_chart(data, chart_type, x, y, title, color=None):
+    fig = getattr(px, chart_type)(data, x=x, y=y, title=title)
+    if color:
+        fig.update_traces(marker=dict(color=color))
+    st.plotly_chart(fig, use_container_width=True)
 
-# Box Plot
-with col1:
-        fig_box = px.box(df, x='Sub-Category', y='Quantity', title='Box Plot')
-        fig_box.update_traces(marker=dict(color='green'))
-        st.plotly_chart(fig_box, use_container_width=True)
+# Create charts
+charts_info = [
+    {"type": "box", "x": "Sub-Category", "y": "Quantity", "title": "Box Plot", "color": "green"},
+    {"type": "bar", "x": "Ship Mode", "y": "Shipping Cost", "title": "Bar Chart", "color": "#eba434"},
+    {"type": "pie", "names": "Order Priority", "title": "Donut Chart", "hole": 0.5},
+    {"type": "histogram", "x": "Region", "title": "Histogram", "color": "#800080"},
+    {"type": "area", "x": "Market", "y": "Profit", "title": "Area Chart"},
+    {"type": "density_heatmap", "x": "Country", "y": "Sales", "title": "Heatmap of Top 10 Countries in Sales", "color_scale": "reds"}
+]
 
-# Bar Chart
-with col2:
-        fig_bar = px.bar(df, x='Ship Mode', y='Shipping Cost', title='Bar Chart')
-        fig_bar.update_traces(marker=dict(color='#eba434')) 
-        st.plotly_chart(fig_bar, use_container_width=True)
+for info in charts_info:
+    if info["type"] == "density_heatmap":
+        sales_by_country = sales_data.groupby('Country')['Sales'].sum().reset_index()
+        top_10_countries = sales_by_country.nlargest(10, 'Sales')
+        df_top_10_countries = sales_data[sales_data['Country'].isin(top_10_countries['Country'])]
+        fig = getattr(px, info["type"])(df_top_10_countries, x=info["x"], y=info["y"], title=info["title"], color_continuous_scale=info["color_scale"])
+    else:
+        fig = getattr(px, info["type"])(sales_data, x=info["x"], y=info["y"], title=info["title"])
+        if "color" in info:
+            fig.update_traces(marker=dict(color=info["color"]))
+    st.plotly_chart(fig, use_container_width=True)
 
-# Donut Chart
-with col3:   
-        fig_donut = px.pie(df, names='Order Priority', title='Donut Chart', hole=0.5)
-        st.plotly_chart(fig_donut, use_container_width=True)
-
-# Histogram
-with col1:   
-        fig_hist = px.histogram(df, x='Region', title='Histogram')
-        fig_hist.update_traces(marker=dict(color='#800080'))
-        st.plotly_chart(fig_hist, use_container_width=True)
-
-# Area Chart
-with col2:    
-        fig_area = px.area(df, x='Market', y='Profit', title='Area Chart')
-        st.plotly_chart(fig_area, use_container_width=True)
-
-# Heatmap
-with col3:
-    sales_by_country = df.groupby('Country')['Sales'].sum().reset_index()
-    top_10_countries = sales_by_country.nlargest(10, 'Sales')
-    df_top_10_countries = df[df['Country'].isin(top_10_countries['Country'])]
-    fig_heatmap_top_10 = px.density_heatmap(df_top_10_countries, x='Country', y='Sales', title='Heatmap of Top 10 Countries in Sales',color_continuous_scale='reds')
-    st.plotly_chart(fig_heatmap_top_10, use_container_width=True)
-
+# Close bordered container
+st.markdown("</div>", unsafe_allow_html=True)
