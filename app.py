@@ -44,8 +44,8 @@ sales_data = pd.read_excel("cleaned_dataset.xlsx", engine='openpyxl')
 
 # Define chart configurations
 charts_info = [
-    {"type": "box", "x": "Sub-Category", "y": "Quantity", "title": "Box Plot", "color_discrete_sequence": ["#FF5733"]},
-    {"type": "bar", "x": "Ship Mode", "y": "Shipping Cost", "title": "Bar Chart", "color_discrete_sequence": px.colors.qualitative.Set1},
+    {"type": "box", "x": "Sub-Category", "y": "Quantity", "title": "Box Plot", "color": "Sub-Category"},
+    {"type": "bar", "x": "Ship Mode", "y": "Shipping Cost", "title": "Bar Chart", "color": "Ship Mode"},
     {"type": "pie", "names": "Order Priority", "title": "Donut Chart", "hole": 0.5},
     {"type": "histogram", "x": "Sales", "title": "Histogram"},
     {"type": "area", "x": "Market", "y": "Profit", "title": "Area Chart"},
@@ -66,7 +66,7 @@ for info in charts_info:
             elif info["type"] == "histogram":
                 fig = getattr(px, info["type"])(sales_data, x=info.get("x"), title=info.get("title"))
             else:
-                fig = getattr(px, info["type"])(sales_data, x=info.get("x"), y=info.get("y"), title=info.get("title"), color_discrete_sequence=info.get("color_discrete_sequence"))
+                fig = getattr(px, info["type"])(sales_data, x=info.get("x"), y=info.get("y"), title=info.get("title"), color=info.get("color"))
             st.plotly_chart(fig, use_container_width=True)
         except KeyError:
             st.write("Invalid chart configuration: ", info)
