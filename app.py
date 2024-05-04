@@ -2,28 +2,30 @@ import pandas as pd
 import streamlit as st
 import plotly.express as px
 
-# Set page configuration
+# Setting page configuration
 st.set_page_config(
-    page_title="Global Sales Dashboard",
+    page_title="Sales Dashboard",
     page_icon=":chart_with_upwards_trend:",
     layout="wide"
 )
 
-# Custom CSS for styling the dashboard
+# Custom CSS to style the dashboard
 st.markdown(
     """
     <style>
+        /* Center align the main header and subheader */
         .center {
             text-align: center;
         }
         
+        /* Add padding to the bordered container */
         .bordered {
-            border: 2px solid #ddd;
-            border-radius: 10px;
+            border: 2px solid #ddd;  /* Add a light gray border */
+            border-radius: 10px;  /* Add border radius for rounded corners */
             padding: 20px;
-            margin-bottom: 10px;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-            background-color: #f9f9f9;
+            margin-bottom: 10px;  /* Add some space between elements */
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* Add a shadow effect */
+            background-color: #f9f9f9; /* Light gray background color */
         }       
     </style>
     """,
@@ -42,7 +44,7 @@ sales_data = pd.read_excel("cleaned_dataset.xlsx", engine='openpyxl')
 
 # Define chart configurations
 charts_info = [
-    {"type": "box", "x": "Sub-Category", "y": "Quantity", "title": "Box Plot", "color": "green"},
+    {"type": "violin", "x": "Sub-Category", "y": "Quantity", "title": "Violin Plot", "color": "blue"},
     {"type": "bar", "x": "Ship Mode", "y": "Shipping Cost", "title": "Bar Chart", "color": "#eba434"},
     {"type": "pie", "names": "Order Priority", "title": "Donut Chart", "hole": 0.5},
     {"type": "histogram", "x": "Sales", "title": "Histogram"},
