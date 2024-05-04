@@ -47,32 +47,25 @@ charts_info = [
     {"type": "box", "x": "Sub-Category", "y": "Quantity", "title": "Box Plot", "color": "Sub-Category"},
     {"type": "bar", "x": "Ship Mode", "y": "Shipping Cost", "title": "Bar Chart", "color": "Ship Mode"},
     {"type": "pie", "names": "Order Priority", "title": "Donut Chart", "hole": 0.5},
-    {"type": "histogram", "x": "Sales", "title": "Histogram"},
-    {"type": "area", "x": "Market", "y": "Profit", "title": "Area Chart"},
-    {"type": "density_heatmap", "x": "Country", "y": "Sales", "title": "Heatmap of Top 10 Countries in Sales", "color_continuous_scale": "reds"}
 ]
 
-# Create and display charts
-for info in charts_info:
-    if "type" in info:
-        try:
-            if info["type"] == "density_heatmap":
-                sales_by_country = sales_data.groupby('Country')['Sales'].sum().reset_index()
-                top_10_countries = sales_by_country.nlargest(10, 'Sales')
-                df_top_10_countries = sales_data[sales_data['Country'].isin(top_10_countries['Country'])]
-                fig = getattr(px, info["type"])(df_top_10_countries, x=info.get("x"), y=info.get("y"), title=info.get("title"), color_continuous_scale=info.get("color_continuous_scale"))
-            elif info["type"] == "pie":
-                fig = getattr(px, info["type"])(sales_data, names=info.get("names"), title=info.get("title"), hole=info.get("hole", 0.5))
-            elif info["type"] == "histogram":
-                fig = getattr(px, info["type"])(sales_data, x=info.get("x"), title=info.get("title"))
-            else:
-                fig = getattr(px, info["type"])(sales_data, x=info.get("x"), y=info.get("y"), title=info.get("title"), color=info.get("color"))
-            st.plotly_chart(fig, use_container_width=True)
-        except KeyError:
+# Create and display charts in the same line
+col1, col2, col3 = st.columns(3)
+
+for index, info in enumerate(charts_info):
+    with eval(f"col{index+1}"):
+        if "type" in info:
+            try:
+                if info["type"] == "pie":
+                    fig = getattr(px, info["type"])(sales_data, names=info.get("names"), title=info.get("title"), hole=info.get("hole", 0.5))
+                else:
+                    fig = getattr(px, info["type"])(sales_data, x=info.get("x"), y=info.get("y"), title=info.get("title"), color=info.get("color"))
+                st.plotly_chart(fig, use_container_width=True)
+            except KeyError:
+                st.write("Invalid chart configuration: ", info)
+                continue
+        else:
             st.write("Invalid chart configuration: ", info)
-            continue
-    else:
-        st.write("Invalid chart configuration: ", info)
 
 # Close bordered container
 st.markdown("</div>", unsafe_allow_html=True)
