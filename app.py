@@ -53,7 +53,7 @@ charts_info = [
 ]
 
 for info in charts_info:
-    if "x" in info:
+    if "x" in info and "y" in info:
         if info["type"] == "density_heatmap":
             sales_by_country = sales_data.groupby('Country')['Sales'].sum().reset_index()
             top_10_countries = sales_by_country.nlargest(10, 'Sales')
