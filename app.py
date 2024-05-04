@@ -44,7 +44,7 @@ sales_data = pd.read_excel("cleaned_dataset.xlsx", engine='openpyxl')
 
 # Define chart configurations
 charts_info = [
-    {"type": "violin", "x": "Sub-Category", "y": "Quantity", "title": "Violin Plot", "color": "blue"},
+    {"type": "box", "x": "Sub-Category", "y": "Quantity", "title": "Box Plot", "color": "orange"},  # Changed color to orange
     {"type": "bar", "x": "Ship Mode", "y": "Shipping Cost", "title": "Bar Chart", "color": "#eba434"},
     {"type": "pie", "names": "Order Priority", "title": "Donut Chart", "hole": 0.5},
     {"type": "histogram", "x": "Sales", "title": "Histogram"},
@@ -66,7 +66,7 @@ for info in charts_info:
             elif info["type"] == "histogram":
                 fig = getattr(px, info["type"])(sales_data, x=info.get("x"), title=info.get("title"))
             else:
-                fig = getattr(px, info["type"])(sales_data, x=info.get("x"), y=info.get("y"), title=info.get("title"))
+                fig = getattr(px, info["type"])(sales_data, x=info.get("x"), y=info.get("y"), title=info.get("title"), color=info.get("color"))
             st.plotly_chart(fig, use_container_width=True)
         except KeyError:
             st.write("Invalid chart configuration: ", info)
