@@ -44,8 +44,8 @@ sales_data = pd.read_excel("cleaned_dataset.xlsx", engine='openpyxl')
 
 # Define chart configurations
 charts_info = [
-    {"type": "box", "x": "Sub-Category", "y": "Quantity", "title": "Box Plot", "color": "orange"},  # Changed color to orange
-    {"type": "bar", "x": "Ship Mode", "y": "Shipping Cost", "title": "Bar Chart", "color": "#eba434"},
+    {"type": "box", "x": "Sub-Category", "y": "Quantity", "title": "Box Plot"},
+    {"type": "bar", "x": "Ship Mode", "y": "Shipping Cost", "title": "Bar Chart", "color": "#eba434"},  # Changed color to orange
     {"type": "pie", "names": "Order Priority", "title": "Donut Chart", "hole": 0.5},
     {"type": "histogram", "x": "Sales", "title": "Histogram"},
     {"type": "area", "x": "Market", "y": "Profit", "title": "Area Chart"},
@@ -65,8 +65,6 @@ for info in charts_info:
                 fig = getattr(px, info["type"])(sales_data, names=info.get("names"), title=info.get("title"), hole=info.get("hole", 0.5))
             elif info["type"] == "histogram":
                 fig = getattr(px, info["type"])(sales_data, x=info.get("x"), title=info.get("title"))
-            elif info["type"] == "box":
-                fig = getattr(px, info["type"])(sales_data, x=info.get("x"), y=info.get("y"), title=info.get("title"))
             else:
                 fig = getattr(px, info["type"])(sales_data, x=info.get("x"), y=info.get("y"), title=info.get("title"), color=info.get("color"))
             st.plotly_chart(fig, use_container_width=True)
