@@ -44,12 +44,12 @@ sales_data = pd.read_excel("cleaned_dataset.xlsx", engine='openpyxl')
 
 # Define chart configurations
 charts_info = [
-    {"type": "box", "x": "Sub-Category", "y": "Quantity", "title": "Box Plot", "color": "#FF5733"},  # Change color here
+    {"type": "box", "x": "Sub-Category", "y": "Quantity", "title": "Box Plot", "color_discrete_sequence": ["#FF5733"]},  # Change color here
     {"type": "bar", "x": "Ship Mode", "y": "Shipping Cost", "title": "Bar Chart"},
     {"type": "pie", "names": "Order Priority", "title": "Donut Chart", "hole": 0.5},
     {"type": "histogram", "x": "Sales", "title": "Histogram"},
     {"type": "area", "x": "Market", "y": "Profit", "title": "Area Chart"},
-    {"type": "density_heatmap", "x": "Country", "y": "Sales", "title": "Heatmap of Top 10 Countries in Sales", "color_scale": "reds"}
+    {"type": "density_heatmap", "x": "Country", "y": "Sales", "title": "Heatmap of Top 10 Countries in Sales", "color_continuous_scale": "reds"}
 ]
 
 # Create and display charts
@@ -60,13 +60,13 @@ for info in charts_info:
                 sales_by_country = sales_data.groupby('Country')['Sales'].sum().reset_index()
                 top_10_countries = sales_by_country.nlargest(10, 'Sales')
                 df_top_10_countries = sales_data[sales_data['Country'].isin(top_10_countries['Country'])]
-                fig = getattr(px, info["type"])(df_top_10_countries, x=info.get("x"), y=info.get("y"), title=info.get("title"), color_continuous_scale=info.get("color_scale"))
+                fig = getattr(px, info["type"])(df_top_10_countries, x=info.get("x"), y=info.get("y"), title=info.get("title"), color_continuous_scale=info.get("color_continuous_scale"))
             elif info["type"] == "pie":
                 fig = getattr(px, info["type"])(sales_data, names=info.get("names"), title=info.get("title"), hole=info.get("hole", 0.5))
             elif info["type"] == "histogram":
                 fig = getattr(px, info["type"])(sales_data, x=info.get("x"), title=info.get("title"))
             else:
-                fig = getattr(px, info["type"])(sales_data, x=info.get("x"), y=info.get("y"), title=info.get("title"), color=info.get("color"))
+                fig = getattr(px, info["type"])(sales_data, x=info.get("x"), y=info.get("y"), title=info.get("title"), color_discrete_sequence=info.get("color_discrete_sequence"))
             st.plotly_chart(fig, use_container_width=True)
         except KeyError:
             st.write("Invalid chart configuration: ", info)
