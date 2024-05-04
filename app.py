@@ -45,7 +45,7 @@ sales_data = pd.read_excel("cleaned_dataset.xlsx", engine='openpyxl')
 # Define chart configurations
 charts_info = [
     {"type": "box", "x": "Sub-Category", "y": "Quantity", "title": "Box Plot"},
-    {"type": "bar", "x": "Ship Mode", "y": "Shipping Cost", "title": "Bar Chart", "color": "#eba434"},  # Changed color to orange
+    {"type": "bar", "x": "Ship Mode", "y": "Shipping Cost", "title": "Bar Chart", "color": "Ship Mode"},  # Set color to "Ship Mode"
     {"type": "pie", "names": "Order Priority", "title": "Donut Chart", "hole": 0.5},
     {"type": "histogram", "x": "Sales", "title": "Histogram"},
     {"type": "area", "x": "Market", "y": "Profit", "title": "Area Chart"},
