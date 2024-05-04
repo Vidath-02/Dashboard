@@ -66,7 +66,7 @@ for info in charts_info:
             elif info["type"] == "histogram":
                 fig = getattr(px, info["type"])(sales_data, x=info.get("x"), title=info.get("title"))
             elif info["type"] == "box":
-                fig = getattr(px, info["type"])(sales_data, x=info.get("x"), y=info.get("y"), title=info.get("title"), points="all", color=info.get("color"))
+                fig = getattr(px, info["type"])(sales_data, x=info.get("x"), y=info.get("y"), title=info.get("title"), color=info.get("color"), points="all")
             else:
                 fig = getattr(px, info["type"])(sales_data, x=info.get("x"), y=info.get("y"), title=info.get("title"), color=info.get("color"))
             st.plotly_chart(fig, use_container_width=True)
