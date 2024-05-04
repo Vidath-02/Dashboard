@@ -47,7 +47,7 @@ charts_info = [
     {"type": "box", "x": "Sub-Category", "y": "Quantity", "title": "Box Plot", "color": "green"},
     {"type": "bar", "x": "Ship Mode", "y": "Shipping Cost", "title": "Bar Chart", "color": "#eba434"},
     {"type": "pie", "names": "Order Priority", "title": "Donut Chart", "hole": 0.5},
-    {"type": "histogram", "x": "Sales", "title": "Histogram", "color": "#800080"},  # Updated x parameter to Sales
+    {"type": "histogram", "x": "Sales", "title": "Histogram"},  # Removed color parameter
     {"type": "area", "x": "Market", "y": "Profit", "title": "Area Chart"},
     {"type": "density_heatmap", "x": "Country", "y": "Sales", "title": "Heatmap of Top 10 Countries in Sales", "color_scale": "reds"}
 ]
@@ -62,11 +62,9 @@ for info in charts_info:
         elif info["type"] == "pie":
             fig = getattr(px, info["type"])(sales_data, names=info.get("names", None), title=info.get("title", None), hole=info.get("hole", 0.5))
         elif info["type"] == "histogram":
-            fig = getattr(px, info["type"])(sales_data, x=info.get("x", None), title=info.get("title", None), color=info.get("color", None))
+            fig = getattr(px, info["type"])(sales_data, x=info.get("x", None), title=info.get("title", None))
         else:
             fig = getattr(px, info["type"])(sales_data, x=info.get("x", None), y=info.get("y", None), title=info.get("title", None))
-        if "color" in info:
-            fig.update_traces(marker=dict(color=info["color"]))
         st.plotly_chart(fig, use_container_width=True)
     else:
         st.write("Invalid chart info: ", info)
